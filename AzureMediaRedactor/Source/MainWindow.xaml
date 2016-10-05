@@ -1,0 +1,102 @@
+﻿<Window x:Class="AzureMediaRedactor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:controls="clr-namespace:AzureMediaRedactor.Controls"
+        xmlns:vms="clr-namespace:AzureMediaRedactor.ViewModels"
+        mc:Ignorable="d"
+        MouseDown="Window_MouseDown">
+    <Window.DataContext>
+        <vms:MainWindowViewModel />
+    </Window.DataContext>
+    <TabControl SelectedIndex="{Binding ActivePageIndex}">
+        <TabControl.Items>
+            <TabItem Visibility="Collapsed">
+                <StackPanel>
+                    <TextBlock Text="Azure Media Redactor Demo" FontSize="32" />
+                    <TextBlock Text="Please run redaction pass on &quot;Tracking&quot; mode and upload the output here to continue." />
+                    <GroupBox Header="Video asset">
+                        <DockPanel>
+                            <Button DockPanel.Dock="Left" Content="Upload File " Command="{Binding UploadVideoCommand}" Style="{StaticResource FileButton}"/>
+                            <TextBlock Text="{Binding VideoUrl}" TextWrapping="Wrap" VerticalAlignment="Center" />
+                        </DockPanel>
+                    </GroupBox>
+                    <GroupBox Header="JSON face metadata">
+                        <DockPanel>
+                            <Button DockPanel.Dock="Left" Content="Upload File " Command="{Binding UploadMetadataCommand}" Style="{StaticResource FileButton}"/>
+                            <TextBlock Text="{Binding MetadataUrl}" TextWrapping="Wrap" VerticalAlignment="Center" />
+                        </DockPanel>
+                    </GroupBox>
+                    <GroupBox Header="Face thumbnails">
+                        <DockPanel>
+                            <Button DockPanel.Dock="Left" Content="Upload Files" Command="{Binding UploadThumbnailsCommand}" Style="{StaticResource FileButton}" />
+                            <TextBlock Text="{Binding ThumbnailUrls}" TextWrapping="Wrap" VerticalAlignment="Center" />
+                        </DockPanel>
+                    </GroupBox>
+                    <Button Content="Next" HorizontalAlignment="Right" Command="{Binding NextCommand}" Margin="0,8,0,0"/>
+                </StackPanel>
+            </TabItem>
+            <TabItem Visibility="Collapsed">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,0,8">
+                        <TextBlock Text="Azure Media Redactor Demo" FontSize="32" />
+                        <TextBlock Text="CHoose the faces you wish to blur, and use the JSON array to submit your second redaction pass." />
+                    </StackPanel>
+                    <controls:VideoPlayer Grid.Row="1" Grid.Column="0" x:Name="videoPlayer" HostVideo="{Binding Video}" Background="YellowGreen" />
+                    <DockPanel Grid.Row="2" Grid.Column="0" Margin="0,8,0,8">
+                        <Button DockPanel.Dock="Left" Content="▶" Command="{Binding Video.PlayCommand}" Style="{StaticResource PlayButton}" />
+                        <Button DockPanel.Dock="Left" Content="❚❚" Command="{Binding Video.PauseCommand}" Style="{StaticResource PlayButton}" />
+                        <TextBlock DockPanel.Dock="Left" VerticalAlignment="Center" Margin="8,0,8,0">
+                            <Run Text="{Binding Video.Position, Mode=OneWay}" />
+                            <Run Text="/" />
+                            <Run Text="{Binding Video.Length, Mode=OneWay}" />
+                        </TextBlock>
+                        <Slider DockPanel.Dock="Right" Minimum="0" Maximum="256" IsMoveToPointEnabled="True" Value="{Binding Video.Progress}" VerticalAlignment="Center" />
+                    </DockPanel>
+                    <DockPanel Grid.Row="3" Grid.Column="0">
+                        <TextBox DockPanel.Dock="Top" IsReadOnly="True" AcceptsReturn="True" Text="{Binding ActiveIds}" Padding="8" />
+                        <Button DockPanel.Dock="Right" Content="Back" Command="{Binding BackCommand}" Margin="0,4,0,0" />
+                        <CheckBox DockPanel.Dock="Left" Content="Blur" IsChecked="{Binding IsBlur}" VerticalAlignment="Bottom" Margin="0,0,0,2" />
+                    </DockPanel>                    
+                    <GroupBox Grid.Row="1" Grid.RowSpan="3" Grid.Column="1" Header="Detected Faces" Margin="8,-11,0,0" Padding="0" >
+                        <ListBox ItemsSource="{Binding Thumbnails}" BorderThickness="0" HorizontalContentAlignment="Stretch">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <DockPanel>
+                                        <CheckBox DockPanel.Dock="Top" VerticalAlignment="Center" IsChecked="{Binding IsChecked}" Content="{Binding Id}" ContentStringFormat="Id: {0:D4}" />
+                                        <Border BorderBrush="PowderBlue" BorderThickness="1">
+                                            <Image Source="{Binding Url}" />
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="PreviewMouseDown">
+                                                    <i:InvokeCommandAction Command="{Binding Command}" />
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                        </Border>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="Width" Value="120" />
+                                    <Setter Property="Padding" Value="0" />
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                        </ListBox>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+        </TabControl.Items>
+    </TabControl>
+</Window>
