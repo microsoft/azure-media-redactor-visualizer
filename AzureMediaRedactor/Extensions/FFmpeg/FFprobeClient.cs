@@ -29,7 +29,7 @@ namespace AzureMediaRedactor.Extensions.FFmpeg
                 StartInfo = new ProcessStartInfo()
                 {
                     FileName = _ffprobeToolPath,
-                    Arguments = $"-i \"{_videoUrl}\" -show_frames -show_entries stream=width,height,time_base,r_frame_rate,duration,duration_ts:frame=pkt_pts,pkt_pts_time,pkt_dts,pkt_dts_time,pkt_duration,pkt_duration_time -print_format json",
+                    Arguments = $"-i \"{_videoUrl}\" -show_frames -show_entries stream=index,width,height,time_base,r_frame_rate,duration,duration_ts:frame=stream_index,pkt_pts,pkt_pts_time,pkt_dts,pkt_dts_time,pkt_duration,pkt_duration_time -print_format json",
                     CreateNoWindow = true,
                     RedirectStandardError = true,
                     RedirectStandardInput = true,

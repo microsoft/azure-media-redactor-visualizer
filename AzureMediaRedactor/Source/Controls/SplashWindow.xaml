@@ -7,6 +7,6 @@
         mc:Ignorable="d"
         Height="80" Width="160" WindowStartupLocation="CenterOwner" Closing="Window_Closing">
     <Grid>
-        <TextBlock Text="Processing..." VerticalAlignment="Center" HorizontalAlignment="Center" />
+        <TextBlock Text="Loading..." VerticalAlignment="Center" HorizontalAlignment="Center" />
     </Grid>
 </Window>

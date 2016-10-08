@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -71,7 +70,11 @@ namespace AzureMediaRedactor.Extensions.FFmpeg
 
         async void HandleStandError(StreamReader reader)
         {
-            while ((await reader.ReadLineAsync()) != null) ;
+            string line;
+            while ((line = await reader.ReadLineAsync()) != null)
+            {
+                Debug.WriteLine(line);
+            }
         }
 
         async void HandleStandOutput(StreamReader reader)

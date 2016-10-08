@@ -106,10 +106,13 @@ namespace AzureMediaRedactor.Extensions.FFmpeg
                         {
                             VideoImage image = await ffmpegClient.ImageBuffer.ReceiveAsync();
 
-                            FrameMetadata frame = _metadata.Frames[pos + number];
-                            await _framesQueue.SendAsync(new VideoFrame(image, frame.Time));
-                            _tailTime = frame.Time + 1.0f / _metadata.TimeScale;
-                            number++;
+                            if (pos + number < _metadata.Frames.Length)
+                            {
+                                FrameMetadata frame = _metadata.Frames[pos + number];
+                                await _framesQueue.SendAsync(new VideoFrame(image, frame.Time));
+                                _tailTime = frame.Time + 1.0f / _metadata.TimeScale;
+                                number++;
+                            }
                         }
                         catch (InvalidOperationException)
                         {

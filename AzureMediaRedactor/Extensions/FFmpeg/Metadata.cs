@@ -50,7 +50,9 @@ namespace AzureMediaRedactor.Extensions.FFmpeg
 
         public VideoMetadata(JToken jsonObj)
         {
-            JToken videoStream = jsonObj.Value<JArray>("streams").First(stream => stream.Value<string>("time_base") != null);
+            JToken videoStream = jsonObj
+                            .Value<JArray>("streams")
+                            .First(stream => stream["width"] != null && stream["height"] != null);
 
             Width = videoStream.Value<int>("width");
             Height = videoStream.Value<int>("height");
@@ -58,7 +60,13 @@ namespace AzureMediaRedactor.Extensions.FFmpeg
             FrameRate = GetFrameRate(videoStream.Value<string>("r_frame_rate"));
             Duration = videoStream.Value<float>("duration");
             DurationInTicks = videoStream.Value<long>("duration_ts");
-            Frames = jsonObj.Value<JArray>("frames").Select(frame => new FrameMetadata(frame)).ToArray();
+
+            int stream_index = videoStream.Value<int>("index");
+            Frames = jsonObj
+                .Value<JArray>("frames")
+                .Where(frame => frame.Value<int>("stream_index") == stream_index)
+                .Select(frame => new FrameMetadata(frame))
+                .ToArray();
             _frameTimes = Frames.Select(frame => frame.Time).ToArray();
         }
 
