@@ -11,6 +11,7 @@ To compile, you must download and place FFMPEG into the project folder.
 4. Run AzureMediaRedactor.exe
 
 To use:
+
 1. Process your video in your Azure Media Services account with the Redactor MP on Analyze mode.
 2. Download both the original video file and the output of the Redaction - Analyze job.
 3. Run the visualizer application and choose the files above.
